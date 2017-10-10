@@ -3,11 +3,14 @@
  */
 package com.sait.amigo.user;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * @author home
  *
  */
-class MyCar implements Vehicle {
+public class MyCar implements Vehicle {
 
 	/**
 	 * 
@@ -170,5 +173,16 @@ class MyCar implements Vehicle {
 		// TODO Auto-generated constructor stub
 	}
 
+	public static void main(String args[]) throws Exception
+	{
+		MyCar mycar= new MyCar();
+		mycar.setBrand("sairamdev");
+		mycar.setFuelType("petrol");
+		ObjectMapper objMapper = new ObjectMapper();
+		System.out.println(objMapper.writer().writeValueAsString(mycar));
+		
+		
+				
+	}
 	
 }
