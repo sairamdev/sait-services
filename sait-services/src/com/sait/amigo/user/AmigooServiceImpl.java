@@ -10,6 +10,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.bson.Document;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.util.JSON;
+
 /**
  * @author home
  *
@@ -27,10 +36,19 @@ public class AmigooServiceImpl {
 	@PUT
 	@Path("setMyCarInfo")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public MyCar setMyCarInfo() {
-		MyCar myCar = new MyCar();
-		return myCar;
+	// @Produces(MediaType.APPLICATION_JSON)
+	public void setMyCarInfo(JsonNode inputCarData) {
+		/*
+		 * MyCar myCar = new MyCar(); return myCar;
+		 */
+		// return Object;
+		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
+		MongoClient mongoClient = amigoDbImpl.getMongoClient();
+		MongoDatabase database = mongoClient.getDatabase("amigoo");
+		MongoCollection<Document> myCarDetailColl = database.getCollection("mycar-details");
+		Document myCarDoc = Document.parse(inputCarData.toString());
+		myCarDetailColl.insertOne(myCarDoc);
+
 	}
 
 	@GET
