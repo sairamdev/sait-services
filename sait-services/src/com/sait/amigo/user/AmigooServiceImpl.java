@@ -3,6 +3,8 @@
  */
 package com.sait.amigo.user;
 
+import java.util.ArrayList;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,7 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.bson.Document;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -51,15 +55,23 @@ public class AmigooServiceImpl {
 	@Path("getMyCarInfo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getMyCarInfo(JsonNode inputCarData) {
+	public ArrayList<Document> getMyCarInfo(JsonNode inputCarData) {
 
 		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
 		MongoClient mongoClient = amigoDbImpl.getMongoClient();
 		MongoDatabase database = mongoClient.getDatabase("amigoo");
 		MongoCollection<Document> myCarDetailColl = database.getCollection("mycar-details");
 
-		Document myDoc = myCarDetailColl.find(Filters.eq("Registration-Number", "AP10R592")).first();
-		return myDoc.toJson();
+		//Document myDoc = myCarDetailColl.find(Filters.eq("UserID", "251615")).first();
+		FindIterable<Document> results=myCarDetailColl.find(Filters.eq("UserID", 251615));
+		ArrayList<Document> myCarList = new ArrayList<Document>();
+		for (Document doc:results)
+		{
+			System.out.println(doc);
+			myCarList.add(doc);
+		}
+		
+		return myCarList;
 
 	}
 
