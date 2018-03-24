@@ -70,7 +70,7 @@ public class AmigooServiceImpl {
 			System.out.println(doc);
 			myCarList.add(doc);
 		}
-		
+		 
 		return myCarList;
 
 	}
