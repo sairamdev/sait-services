@@ -56,21 +56,21 @@ public class AmigooServiceImpl {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<Document> getMyCarInfo(JsonNode inputCarData) {
-
+		String userId = inputCarData.get("UserID").asText();
 		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
 		MongoClient mongoClient = amigoDbImpl.getMongoClient();
 		MongoDatabase database = mongoClient.getDatabase("amigoo");
 		MongoCollection<Document> myCarDetailColl = database.getCollection("mycar-details");
 
-		//Document myDoc = myCarDetailColl.find(Filters.eq("UserID", "251615")).first();
-		FindIterable<Document> results=myCarDetailColl.find(Filters.eq("UserID", 251615));
+		// Document myDoc = myCarDetailColl.find(Filters.eq("UserID",
+		// "251615")).first();
+		FindIterable<Document> results = myCarDetailColl.find(Filters.eq("UserID", userId));
 		ArrayList<Document> myCarList = new ArrayList<Document>();
-		for (Document doc:results)
-		{
+		for (Document doc : results) {
 			System.out.println(doc);
 			myCarList.add(doc);
 		}
-		 
+
 		return myCarList;
 
 	}
@@ -92,13 +92,22 @@ public class AmigooServiceImpl {
 	@Path("getMyCarBrkDwnInfo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getMyCarBrkDwnInfo(JsonNode inputCarData) {
+	public  ArrayList<Document> getMyCarBrkDwnInfo(JsonNode inputCarData) {
+		String userId = inputCarData.get("UserID").asText();
 		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
 		MongoClient mongoClient = amigoDbImpl.getMongoClient();
 		MongoDatabase database = mongoClient.getDatabase("amigoo");
-		MongoCollection<Document> myCarBrkDownColl = database.getCollection("mycar-breakdown");
-		
-		Document myDoc = myCarBrkDownColl.find(Filters.eq("name","sairamdev")).first();
-		return myDoc.toJson();
+		MongoCollection<Document> myCarDetailColl = database.getCollection("mycar-breakdown");
+
+		// Document myDoc = myCarDetailColl.find(Filters.eq("UserID",
+		// "251615")).first();
+		FindIterable<Document> results = myCarDetailColl.find(Filters.eq("UserID", userId));
+		ArrayList<Document> myCarBreakDownList = new ArrayList<Document>();
+		for (Document doc : results) {
+			System.out.println(doc);
+			myCarBreakDownList.add(doc);
+		}
+
+		return myCarBreakDownList;
 	}
 }
