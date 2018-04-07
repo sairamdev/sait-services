@@ -18,6 +18,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
 
 /**
  * @author home
@@ -92,7 +93,7 @@ public class AmigooServiceImpl {
 	@Path("getMyCarBrkDwnInfo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public  ArrayList<Document> getMyCarBrkDwnInfo(JsonNode inputCarData) {
+	public ArrayList<Document> getMyCarBrkDwnInfo(JsonNode inputCarData) {
 		String userId = inputCarData.get("UserID").asText();
 		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
 		MongoClient mongoClient = amigoDbImpl.getMongoClient();
@@ -110,4 +111,52 @@ public class AmigooServiceImpl {
 
 		return myCarBreakDownList;
 	}
+
+	@POST
+	@Path("deleteMyCarInfo")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<Document> deleteMyCarInfo(JsonNode inputCarData) {
+		String userId = inputCarData.get("carId").asText();
+		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
+		MongoClient mongoClient = amigoDbImpl.getMongoClient();
+		MongoDatabase database = mongoClient.getDatabase("amigoo");
+		MongoCollection<Document> myCarDetailColl = database.getCollection("mycar-details");
+
+		// Document myDoc = myCarDetailColl.find(Filters.eq("UserID",
+		// "251615")).first();
+		String carId = inputCarData.get("carId").asText();
+		ArrayList<Document> deleteStatus = new ArrayList<Document>();
+		Document doc = new Document();
+		DeleteResult result = myCarDetailColl.deleteOne(Filters.eq("carId", carId));
+		doc.append("DelStatus", result);
+		// doc.append("DelCount", result.getDeletedCount());
+		deleteStatus.add(doc);
+		return deleteStatus;
+
+	}
+
+	@POST
+	@Path("deleteBrkDwnHistory")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<Document> deleteBrkDwnHistory(JsonNode inputCarData) {
+		String brkDwnId = inputCarData.get("brkDwnId").asText();
+		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
+		MongoClient mongoClient = amigoDbImpl.getMongoClient();
+		MongoDatabase database = mongoClient.getDatabase("amigoo");
+		MongoCollection<Document> myCarBrkDwnColl = database.getCollection("mycar-breakdown");
+
+		// Document myDoc = myCarDetailColl.find(Filters.eq("UserID",
+		// "251615")).first();
+		// String brkDwnId = inputCarData.get("brkDwnId").asText();
+		ArrayList<Document> deleteStatus = new ArrayList<Document>();
+		Document doc = new Document();
+		DeleteResult result = myCarBrkDwnColl.deleteOne(Filters.eq("brkDwnId", brkDwnId));
+		doc.append("DelStatus", result);
+		// doc.append("DelCount", result.getDeletedCount());
+		deleteStatus.add(doc);
+		return deleteStatus;
+	}
+
 }
