@@ -117,19 +117,19 @@ public class AmigooServiceImpl {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public ArrayList<Document> deleteMyCarInfo(JsonNode inputCarData) {
-		String userId = inputCarData.get("carId").asText();
+		
 		AmigooDBImpl amigoDbImpl = new AmigooDBImpl();
 		MongoClient mongoClient = amigoDbImpl.getMongoClient();
 		MongoDatabase database = mongoClient.getDatabase("amigoo");
 		MongoCollection<Document> myCarDetailColl = database.getCollection("mycar-details");
 
-		// Document myDoc = myCarDetailColl.find(Filters.eq("UserID",
-		// "251615")).first();
+		
 		String carId = inputCarData.get("carId").asText();
 		ArrayList<Document> deleteStatus = new ArrayList<Document>();
 		Document doc = new Document();
 		DeleteResult result = myCarDetailColl.deleteOne(Filters.eq("carId", carId));
-		doc.append("DelStatus", result);
+		doc.append("DeletedStatus", result);
+		doc.append("DeletedCarId", carId);
 		// doc.append("DelCount", result.getDeletedCount());
 		deleteStatus.add(doc);
 		return deleteStatus;
